@@ -24,11 +24,15 @@
     <label>🖼️ 上傳背景圖：<input type="file" id="bgUpload" accept="image/*" /></label>
     <label>📥 上傳 Excel：<input type="file" id="excelUpload" accept=".xlsx, .xls" /></label>
     <!-- <label hidden>📝 標題：<input type="text" id="titleInput" placeholder="此功能目前不可用" hidden /></label> -->
+    <label>
 
     <button id="generateBtn">⚡ 開始產圖</button>
     <div id="status"></div>
   </div>
   <label><input type="checkbox" id="censorToggle" /> 啟用打碼（姓名與地址）</label>
+  <input type="checkbox" id="hideDayHourToggle" />
+  不顯示日與時
+  </label>
   <canvas id="c" width="1146" height="768"></canvas>
 
   <!-- JS  -->

@@ -8,7 +8,7 @@ const titleInput = document.getElementById("titleInput");
 const generateBtn = document.getElementById("generateBtn");
 const statusDiv = document.getElementById("status");
 const censorToggle = document.getElementById("censorToggle");
-
+const hideDayHourToggle = document.getElementById("hideDayHourToggle");
 
 const NAME_OFFSET_X = -10;
 
@@ -94,11 +94,13 @@ function drawBirthColumn(item, [x, y], fontSize = 18, spacing = 2, offsetY = 5) 
   const parts = [];
 
   const cleanNum = (val) => String(val).replace(/[年月日號时时]/g, '');
-
+  
   if (item.year) parts.push(cleanNum(item.year), '年');
   if (item.month) parts.push(cleanNum(item.month), '月');
-  if (item.day) parts.push(cleanNum(item.day), '日');
-  if (item.hour) parts.push(cleanNum(item.hour), '時');
+  if (!hideDayHourToggle.checked) {
+    if (item.day) parts.push(cleanNum(item.day), '日');
+    if (item.hour) parts.push(cleanNum(item.hour), '時');
+  }
 
   const fullText = parts.join('\n');
   const textHeight = parts.length * fontSize + (parts.length - 1) * spacing;
