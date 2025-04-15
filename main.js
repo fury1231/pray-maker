@@ -7,6 +7,8 @@ const excelInput = document.getElementById("excelUpload");
 const titleInput = document.getElementById("titleInput");
 const generateBtn = document.getElementById("generateBtn");
 const statusDiv = document.getElementById("status");
+const censorToggle = document.getElementById("censorToggle");
+
 
 const NAME_OFFSET_X = -10;
 
@@ -67,7 +69,8 @@ function drawPage(group, title) {
       hour: item.時
     }, pos.year, 21, 2, 6);
 
-    canvas.add(new fabric.Text(toVertical(item.姓名 || ""), {
+    const nameText = censorToggle.checked ? censorName(item.姓名 || "") : item.姓名 || "";
+    canvas.add(new fabric.Text(toVertical(nameText), {
       left: pos.name[0] + NAME_OFFSET_X,
       top: pos.name[1] - 5,
       fontSize: 33,
@@ -80,7 +83,8 @@ function drawPage(group, title) {
       
     }));
 
-    drawAddressSmartVertical(item.地址 || "", pos.address, 25);
+    const addressText = censorToggle.checked ? censorAddress(item.地址 || "") : item.地址 || "";
+    drawAddressSmartVertical(addressText, pos.address, 25);
   });
 
   canvas.renderAll();
@@ -180,4 +184,26 @@ function exportImage(index) {
   a.download = `page_${index}.png`;
   a.href = canvas.toDataURL({ format: "png" });
   a.click();
+}
+
+function censorName(name) {
+  if (!name) return "";
+  const chars = name.split('');
+  for (let i = 1; i < chars.length; i += 2) {
+    chars[i] = '○';
+  }
+  return chars.join('');
+}
+
+function censorAddress(address) {
+  if (!address || address.length <= 7) return address;
+
+  const visible = address.slice(0, 7);
+  const rest = address.slice(7).split('');
+
+  for (let i = 1; i < rest.length; i += 2) {
+    rest[i] = '○';
+  }
+
+  return visible + rest.join('');
 }
