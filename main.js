@@ -97,7 +97,7 @@ function drawBirthColumn(item, [x, y], fontSize = 18, spacing = 2, offsetY = 5) 
 
   if (item.year) parts.push(cleanNum(item.year), '年');
   if (item.month) parts.push(cleanNum(item.month), '月');
-  if (item.day) parts.push(cleanNum(item.day), '號');
+  if (item.day) parts.push(cleanNum(item.day), '日');
   if (item.hour) parts.push(cleanNum(item.hour), '時');
 
   const fullText = parts.join('\n');
@@ -190,7 +190,7 @@ function censorName(name) {
   if (!name) return "";
   const chars = name.split('');
   for (let i = 1; i < chars.length; i += 2) {
-    chars[i] = '○';
+    chars[i] = '＊';
   }
   return chars.join('');
 }
@@ -202,7 +202,7 @@ function censorAddress(address) {
   const rest = address.slice(7).split('');
 
   for (let i = 1; i < rest.length; i += 2) {
-    rest[i] = '○';
+    rest[i] = '＊';
   }
 
   return visible + rest.join('');
