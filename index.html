@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>祈福名錄產圖工具</title>
+  <link rel="stylesheet" href="style.css" />
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .controls label { display: block; margin-bottom: 10px; }
+        canvas { border: 1px solid #ccc; margin-top: 20px; }
+    </style>
+</head>
+<body>
+  <div id="download">
+  <a href="./works.ai">AI模板檔案備份下載</a>（請不要動圖的尺寸以免無法正常運行，僅提供改背景圖、標題。）
+  <br>
+  <a href="./祈福名錄公版.xlsx">EXCEL公版下載</a>（請勿動第一行以免無法正常運行，請依序填入。）
+  </div>
+  <div id="title">
+    <h2>🙏 祈福名錄自動產圖工具</h2>
+  </div>
+  <div class="controls">
+
+    <label>🖼️ 上傳背景圖：<input type="file" id="bgUpload" accept="image/*" /></label>
+    <label>📥 上傳 Excel：<input type="file" id="excelUpload" accept=".xlsx, .xls" /></label>
+    <!-- <label hidden>📝 標題：<input type="text" id="titleInput" placeholder="此功能目前不可用" hidden /></label> -->
+
+    <button id="generateBtn">⚡ 開始產圖</button>
+    <div id="status"></div>
+  </div>
+  <label><input type="checkbox" id="censorToggle" /> 啟用打碼（姓名與地址）</label>
+  <canvas id="c" width="1146" height="768"></canvas>
+
+  <!-- JS  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  
+  <script src="positions.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
