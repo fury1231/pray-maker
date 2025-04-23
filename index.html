@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-  <div id="download">
+  <div id="download" style="background:#f1f1f1;padding:12px;border-radius:8px;">
   <a href="./works.ai">AI模板檔案備份下載</a>（請不要動圖的尺寸以免無法正常運行，僅提供改背景圖、標題。）
   <br>
   <a href="./祈福名錄公版.xlsx">EXCEL公版下載</a>（請勿動第一行以免無法正常運行，請依序填入。）
@@ -35,10 +35,10 @@
     <button id="generateBtn">⚡ 開始產圖</button>
     <div id="status"></div>
   </div>
-  <label><input type="checkbox" id="censorToggle" /> 啟用打碼（姓名與地址）</label>
-  <input type="checkbox" id="hideDayHourToggle" />
-  不顯示日與時
-  </label>
+  <div style="display:flex;gap:20px;align-items:center;margin-top:10px">
+    <label><input type="checkbox" id="censorToggle" /> 啟用打碼</label>
+    <label><input type="checkbox" id="hideDayHourToggle" /> 不顯示日與時</label>
+  </div>
   <canvas id="c" width="1146" height="768"></canvas>
 
   <!-- JS  -->
