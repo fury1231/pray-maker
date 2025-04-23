@@ -10,6 +10,13 @@ const statusDiv = document.getElementById("status");
 const censorToggle = document.getElementById("censorToggle");
 const hideDayHourToggle = document.getElementById("hideDayHourToggle");
 
+let currentMode = "mode1"; // 預設選擇為mode1
+const modeSelector = document.getElementById("modeSelector");  // 切換產圖模式
+modeSelector.addEventListener("change", (e) => {
+  currentMode = e.target.value;
+});
+
+
 const NAME_OFFSET_X = -10;
 
 bgInput.addEventListener("change", (e) => {
@@ -41,34 +48,38 @@ excelInput.addEventListener("change", (e) => {
 
 generateBtn.addEventListener("click", async () => {
   const title = "";
-  const groupCount = Math.ceil(allData.length / 23);
+
+  const pageSize = currentMode === "mode2" ? 22 : 23; // 重點：依模式設定每頁幾筆
+  const groupCount = Math.ceil(allData.length / pageSize); // 用 pageSize 計算頁數
 
   for (let i = 0; i < groupCount; i++) {
-    const group = allData.slice(i * 23, (i + 1) * 23);
+    const group = allData.slice(i * pageSize, (i + 1) * pageSize); // 切出每頁的資料
     drawPage(group, title);
     await delay(300);
     exportImage(i + 1);
   }
+
   statusDiv.innerText = `✅ 完成，共產生 ${groupCount} 張圖片。`;
 });
 
 function drawPage(group, title) {
+
   canvas.clear();
   if (bgImage) canvas.setBackgroundImage(bgImage, canvas.renderAll.bind(canvas));
 
-  const map = POSITION_MAP;
+  const map = POS_MAP[currentMode];
 
   group.forEach((item, i) => {
     const pos = map[i];
     if (!pos) return;
-
+    if (currentMode === "mode1") {
     drawBirthColumn({
       year: item.年,
       month: item.月,
       day: item.日,
       hour: item.時
     }, pos.year, 21, 2, 6);
-
+    }
     const nameText = censorToggle.checked ? censorName(item.姓名 || "") : item.姓名 || "";
     canvas.add(new fabric.Text(toVertical(nameText), {
       left: pos.name[0] + NAME_OFFSET_X,
@@ -80,7 +91,7 @@ function drawPage(group, title) {
       originY: "top",
       textAlign: "left",
       lineHeight:1 // 調整姓名每個字的距離
-      
+
     }));
 
     const addressText = censorToggle.checked ? censorAddress(item.地址 || "") : item.地址 || "";
@@ -94,7 +105,7 @@ function drawBirthColumn(item, [x, y], fontSize = 18, spacing = 2, offsetY = 5) 
   const parts = [];
 
   const cleanNum = (val) => String(val).replace(/[年月日號时时]/g, '');
-  
+
   if (item.year) parts.push(cleanNum(item.year), '年');
   if (item.month) parts.push(cleanNum(item.month), '月');
   if (!hideDayHourToggle.checked) {
@@ -151,7 +162,7 @@ function drawAddressSmartVertical(text, [x, y], baseFontSize = 25) {
   const verticalText = toVerticalAddress(text);
   const lineCount = verticalText.split('\n').length;
 
-  // 👇 超過 15 行就縮小字體，最小縮到 14
+  // 超過 15 行就縮小字體，最小縮到 14
   const fontSize = lineCount > 15
     ? Math.max(14, Math.floor(baseFontSize * 15 / lineCount))
     : baseFontSize;
@@ -209,3 +220,56 @@ function censorAddress(address) {
 
   return visible + rest.join('');
 }
+
+
+canvas.on("mouse:down", function (options) {
+  if (options.e.button === 2) return; // 忽略右鍵
+
+  const pointer = canvas.getPointer(options.e);
+  const x = Math.round(pointer.x);
+  const y = Math.round(pointer.y);
+
+  const circle = new fabric.Circle({
+    left: x,
+    top: y,
+    radius: 4,
+    fill: 'red',
+    originX: 'center',
+    originY: 'center'
+  });
+
+  const label = new fabric.Text(`(${x},${y})`, {
+    left: x + 10,
+    top: y - 10,
+    fontSize: 12,
+    fill: 'red',
+    fontFamily: 'monospace',
+    originX: 'left',
+    originY: 'top'
+  });
+
+  const group = new fabric.Group([circle, label], {
+    left: x,
+    top: y,
+    hasControls: false,
+    hasBorders: false,
+    selectable: true
+  });
+
+  canvas.add(group);
+  canvas.renderAll();
+});
+
+canvas.upperCanvasEl.addEventListener("contextmenu", function (e) {
+  e.preventDefault(); // 防止瀏覽器右鍵選單
+
+  const pointer = canvas.getPointer(e);
+
+  // 取得滑鼠點擊位置下的物件（Group）
+  const target = canvas.findTarget(e, false);
+
+  if (target && target.type === "group") {
+    canvas.remove(target);
+    canvas.renderAll();
+  }
+});
